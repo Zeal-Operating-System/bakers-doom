@@ -1,4 +1,4 @@
-# chocolate-doom
+# bakers-doom
 
 Chocolate Doom Loader and Translation Layer for TempleOS.
 
@@ -11,6 +11,8 @@ Ported to ZealOS on 12/17/2023.
 # Usage
 
 Clone the repo into your /Home/ folder.
+
+Use the sync script in the ZealOS `build` folder to sync the files to your VM. 
 
 Then, `#include "Run";`
 
