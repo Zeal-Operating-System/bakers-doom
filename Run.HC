@@ -1,1 +1,0 @@
-XTalkWait(Fs, "#include \"Load\";\n");

@@ -16,7 +16,11 @@ U32 sdl_game_colors[256];
 
 CFifoI64 *sdl_event_fifo = FifoI64New(1024);
 
-CDC *dc_gamescreen = DCNew(320, 200);
+#define SDL_DC_WIDTH	1024
+#define SDL_DC_HEIGHT	768
+//CDC *dc_gamescreen = DCNew(320, 200);
+//CDC *dc_gamescreen = DCNew(640, 480);
+CDC *dc_gamescreen = DCNew(SDL_DC_WIDTH, SDL_DC_HEIGHT);
 
 U16 sdl_mouse_x = 0;
 U16 sdl_mouse_y = 0;
@@ -133,9 +137,9 @@ U0 SDL_EnableKeyRepeat() {
 
 U0 game_start_set_colors() {
   I64 i;
-  for (i = 0; i < 256; i++)
-    TG_ColorSet(i, sdl_game_colors[i].u8[0], sdl_game_colors[i].u8[1],
-                sdl_game_colors[i].u8[2]);
+//  for (i = 0; i < 256; i++)
+//    TG_ColorSet(i, sdl_game_colors[i].u8[0], sdl_game_colors[i].u8[1],
+//                sdl_game_colors[i].u8[2]);
 }
 
 I32 @SDL_EnableUNICODE(I32 i) { return i; }
@@ -146,7 +150,7 @@ U0 SDL_EnableUNICODE() {
   debug_print("called: SDL_EnableUNICODE(%d)\n", p0);
   game_start_set_colors;
   sdl_initial_palette_set = TRUE;
-  TG_Start;
+//  TG_Start;
   @SDL_EnableUNICODE(p0);
   POP_SYSV_REGS
 }
@@ -164,15 +168,47 @@ U0 SDL_FillRect() {
   POP_SYSV_REGS
 }
 
+//////////////////////////////////////////////
+I0 DrawScreenPixel(I64 x, I64 y, CBGR24 color)
+{
+	text.fb_alias[x + y * GR_WIDTH] = color;
+}
+public U32 class CRGB24{U8	r, g, b, pad;};
+//////////////////////////////////////////////
+
 I64 @SDL_Flip(SDL_Surface *surface) {
   // dc_gamescreen->body = surface->pixels;
   // GrBlot(gr.dc, 0, 0, dc_gamescreen);
 
-  while ((InU8(VGA_INSTAT_READ) & 1))
-    ;
-  while (!(InU8(VGA_INSTAT_READ) & 1))
-    ;
-  MemCpy(VGAM_GRAPHICS, surface->pixels, TG_WIDTH * TG_HEIGHT);
+//  while ((InU8(VGA_INSTAT_READ) & 1))
+ //   ;
+  //while (!(InU8(VGA_INSTAT_READ) & 1))
+  //v  ;
+
+//  MemCopy(text.fb_alias, surface->pixels, TG_WIDTH * TG_HEIGHT);
+
+	CBGR24 out_px;
+	CRGB24 in_px;
+
+	I64 ix, iy;
+	for (iy=0; iy<SDL_DC_HEIGHT; iy++)
+	{
+		for (ix=0; ix<SDL_DC_WIDTH; ix++)
+		{
+//			DrawScreenPixel(ix, iy, surface->pixels[ix+iy*TG_WIDTH]);
+//			DrawScreenPixel(ix, iy, gr_palette[surface->pixels[ix+iy*TG_WIDTH]]);
+//			DrawScreenPixel(ix, iy, surface->format->palette->colors[surface->pixels[ix+iy*TG_WIDTH]]);
+
+			in_px = surface->format->palette->colors[surface->pixels[ix+iy*SDL_DC_WIDTH]];;
+			out_px.r = in_px.r ;
+			out_px.g = in_px.g ;
+			out_px.b = in_px.b ;
+			DrawScreenPixel(ix, iy, out_px);
+
+
+		}
+	}
+
 
   return 0;
 }
@@ -198,7 +234,7 @@ U0 SDL_Init() {
   PUSH_SYSV_REGS
   GET_SYSV_ARGS
   debug_print("called: SDL_Init()\n");
-  sdl.ticks_init = cnts.jiffies;
+  sdl.ticks_init = counts.jiffies;
   @SDL_Init;
   POP_SYSV_REGS
 }
@@ -237,7 +273,7 @@ U0 SDL_GetRelativeMouseState() {
   POP_SYSV_REGS
 }
 
-I32 @SDL_GetTicks() { return cnts.jiffies - sdl.ticks_init; }
+I32 @SDL_GetTicks() { return counts.jiffies - sdl.ticks_init; }
 
 U0 SDL_GetTicks() {
   PUSH_SYSV_REGS
@@ -246,6 +282,20 @@ U0 SDL_GetTicks() {
   @SDL_GetTicks;
   POP_SYSV_REGS
 }
+
+U0 SDL_LockSurface()
+{ //stub
+  PUSH_SYSV_REGS
+  GET_SYSV_ARGS
+  POP_SYSV_REGS
+}
+U0 SDL_UnlockSurface()
+{ //stub
+  PUSH_SYSV_REGS
+  GET_SYSV_ARGS
+  POP_SYSV_REGS
+}
+
 
 SDL_VideoInfo *@SDL_GetVideoInfo() {
   SDL_VideoInfo *vinfo = CAlloc(sizeof(SDL_VideoInfo), Fs->code_heap);
@@ -279,8 +329,8 @@ U0 SDL_GetVideoInfo() {
 SDL_Rect **@SDL_ListModes() {
   SDL_Rect **modes = CAlloc(sizeof(SDL_Rect *) * 2, Fs->code_heap);
   modes[0] = CAlloc(sizeof(SDL_Rect), Fs->code_heap);
-  modes[0]->w = 320;
-  modes[0]->h = 200;
+  modes[0]->w = SDL_DC_WIDTH;
+  modes[0]->h = SDL_DC_HEIGHT;
   return modes;
 }
 
@@ -294,9 +344,9 @@ U0 SDL_ListModes() {
 
 I64 @SDL_PollEvent(SDL_KeyboardEvent *event) {
   I64 ev = NULL;
-  if (FifoI64Cnt(sdl_event_fifo)) {
-    FifoI64Rem(sdl_event_fifo, &ev);
-    MemCpy(event, ev, sizeof(SDL_KeyboardEvent));
+  if (FifoI64Count(sdl_event_fifo)) {
+    FifoI64Remove(sdl_event_fifo, &ev);
+    MemCopy(event, ev, sizeof(SDL_KeyboardEvent));
     Free(ev);
     return 1;
   } else
@@ -344,7 +394,7 @@ U32 sdl_get_sym_for_scancode(I64 sc) {
 }
 
 U0 @SDL_PumpEvents() {
-  KbdMsHndlr(FALSE, FALSE);
+  KbdMouseHandler(FALSE, FALSE);
   I64 i;
   Bool key_state;
   SDL_KeyboardEvent *event;
@@ -383,8 +433,8 @@ I64 @SDL_SetColors(SDL_Surface *surface, SDL_Color *colors, I64 firstcolor,
   I64 i;
   SDL_Color *dst_colors = surface->format->palette->colors;
   for (i = firstcolor; i < ncolors; i++) {
-    if (sdl_initial_palette_set)
-      TG_ColorSet(i, colors->r, colors->g, colors->b);
+//    if (sdl_initial_palette_set)
+//      TG_ColorSet(i, colors->r, colors->g, colors->b);
     sdl_game_colors[i].u8[0] = colors->r;
     sdl_game_colors[i].u8[1] = colors->g;
     sdl_game_colors[i].u8[2] = colors->b;
@@ -445,7 +495,7 @@ U0 SDL_ShowCursor() {
 
 U8 *@SDL_VideoDriverName(U8 *namebuf, I32 maxlen) {
   no_warn maxlen;
-  StrCpy(namebuf, "TempleOS");
+  StrCopy(namebuf, "ZealOS");
   return namebuf;
 }
 
@@ -489,6 +539,6 @@ U0 SDL_WM_SetCaption() {
 
 U0 SDL_QuitSubSystem() {
   TG_Exit;
-  PaletteSetStd;
-  _exit();
+//  PaletteSetStd;
+  _exit();
 }

@@ -1,19 +1,31 @@
 # chocolate-doom
 
-Chocolate Doom Loader and Translation Layer for TempleOS
+Chocolate Doom Loader and Translation Layer for TempleOS.
 
-![chocolate-doom](https://git.checksum.fail/alec/chocolate-doom/raw/branch/master/preview.gif "chocolate-doom")
+By Alec Murphy for TempleOS.
+
+Ported to ZealOS on 12/17/2023.
+
+![chocolate-doom](preview.gif "chocolate-doom")
 
 # Usage
 
-Clone the repo, create a RedSea `ISO.C` image, `#include "Run";`
+Clone the repo into your /Home/ folder.
 
-The WAD file for the Shareware version of DOOM is included, other game WADs supported by chocolate-doom may or may not work, I have not tested them yet.
+Then, `#include "Run";`
 
-I have not implemented save games yet; if you try to save your game, it will crash. 
+# Notes
+
+The WAD file for the Shareware version of DOOM is included,
+other game WADs supported by chocolate-doom may or may not work.
+
+If testing other WADs, edit `Load.ZC` chocolate-doom args.
+
+Save games not implemented yet; if you try to save your game,
+it will crash. 
 
 # TODO
 
 - Sound support
-
 - Save games
+- Bugfixes

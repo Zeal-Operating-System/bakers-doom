@@ -1,0 +1,4 @@
+Cd(__DIR__);
+In("Mount;\nB\n2*256*1024\n\n\n");
+//Cd("::/Home/PRE-GIT/Achocolate-doom/");
+In("#include \"Go\";;\n");

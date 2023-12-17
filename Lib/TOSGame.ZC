@@ -1,4 +1,5 @@
-Bool TG_Debug = FALSE;
+
+/*Bool TG_Debug = FALSE;
 
 #define TG_COLORS 256
 #define TG_WIDTH 320
@@ -23,9 +24,9 @@ Bool TG_Debug = FALSE;
 #define VGA_AC_WRITE 0x3C0
 
 Bool TG_VGA_UPDATE = FALSE;
-CBGR48 TOS_PALETTE[COLORS_NUM];
+CBGR24 TOS_PALETTE[COLORS_NUM];
 CDC *TG_Canvas = DCNew(TG_WIDTH, TG_HEIGHT);
-I64 TOS_KEYDEV_FP[26];
+*/I64 TOS_KEYDEV_FP[26];/*
 
 U8 TG_VGAMode320x200x256[61] = {
     0x63, 0x03, 0x01, 0x0F, 0x00, 0x0E, 0x5F, 0x4F, 0x50, 0x82, 0x54,
@@ -92,39 +93,39 @@ U0 TG_VGASwitchMode(I64 mode) {
 
 U0 TG_ColorSet(I64 index, I64 r, I64 g,
                I64 b) { // Set color value for color 0-255, RGB 0-255.
-  OutU8(VGAP_REG_WRITE, index);
+/*  OutU8(VGAP_REG_WRITE, index);
   OutU8(VGAP_PALETTE_DATA, r >> 2);
   OutU8(VGAP_PALETTE_DATA, g >> 2);
   OutU8(VGAP_PALETTE_DATA, b >> 2);
-}
+*/}
 
 U0 TG_ColorGet(I64 index, I64 *r, I64 *g,
                I64 *b) { // Get color value for color 0-255, RGB 0-255.
-  OutU8(VGAP_REG_READ, index);
+/*  OutU8(VGAP_REG_READ, index);
   r[0] = InU8(VGAP_PALETTE_DATA) << 2;
   g[0] = InU8(VGAP_PALETTE_DATA) << 2;
   b[0] = InU8(VGAP_PALETTE_DATA) << 2;
-}
+*/}
 
 U0 TG_Flip() {
-  while ((InU8(VGA_INSTAT_READ) & 1))
+//  while ((InU8(VGA_INSTAT_READ) & 1))
     ;
-  while (!(InU8(VGA_INSTAT_READ) & 1))
+//  while (!(InU8(VGA_INSTAT_READ) & 1))
     ;
-  MemCpy(VGAM_GRAPHICS, TG_Canvas->body, TG_WIDTH * TG_HEIGHT);
+//  MemCopy(text.fb_alias, TG_Canvas->body, TG_WIDTH * TG_HEIGHT);//  MemCopy(VGAM_GRAPHICS, TG_Canvas->body, TG_WIDTH * TG_HEIGHT);
 }
 
-Bool TG_KeyDown(I64 sc) { return Bt(kbd.down_bitmap, sc); }
+*/Bool TG_KeyDown(I64 sc) { return Bt(kbd.down_bitmap, sc); }/*
 
-I64 TG_MouseX() { return ms.pos.x / 2; }
+I64 TG_MouseX() { return mouse.pos.x / 2; }
 
-I64 TG_MouseY() { return ms.pos.y / 2.4; }
-
+I64 TG_MouseY() { return mouse.pos.y / 2.4; }
+*/
 U0 TG_Start() {
   I64 i;
-  GrPaletteGet(&TOS_PALETTE);
+//  GrPaletteGet(&TOS_PALETTE);
   LBts(&sys_winmgr_task->task_flags, TASKf_SUSPENDED);
-  TG_VGASwitchMode(VGA_MODE_320x200x256);
+//  TG_VGASwitchMode(VGA_MODE_320x200x256);
   for (i = 0; i < 26; i++) {
     TOS_KEYDEV_FP[i] = keydev.fp_ctrl_alt_cbs[i];
     keydev.fp_ctrl_alt_cbs[i] = NULL;
@@ -133,22 +134,22 @@ U0 TG_Start() {
 
 U0 TG_Exit() {
   I64 i;
-  TG_VGASwitchMode(VGA_MODE_640x480x16);
-  GrPaletteSet(&TOS_PALETTE);
-  GrPaletteIndicesSet;
-  VGAFlush;
+//  TG_VGASwitchMode(VGA_MODE_640x480x16);
+//  GrPaletteSet(&TOS_PALETTE);
+//  GrPaletteIndicesSet;
+	LFBFlush;//  VGAFlush;
   FifoU8Flush(kbd.scan_code_fifo);
-  FlushMsgs;
+  FlushMessages;
   for (i = 0; i < 26; i++) {
     keydev.fp_ctrl_alt_cbs[i] = TOS_KEYDEV_FP[i];
   }
   LBtc(&sys_winmgr_task->task_flags, TASKf_SUSPENDED);
 }
-
+/*
 U0 TG_Resume() {
   // Resume from debugger.
 
   TG_Start;
   TG_Debug = FALSE;
   G2;
-}
+}*/

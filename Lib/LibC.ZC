@@ -6,7 +6,7 @@ extern U64 get_symbol_address(U8 *entry_name);
 
 U64 find_u32_in_memory(U64 offset, U32 value) {
   I64 i = 0;
-  while (MemCmp(offset + i, &value, 4))
+  while (MemCompare(offset + i, &value, 4))
     i++;
   return offset + i;
 }
@@ -129,7 +129,7 @@ U0 calloc() {
 }
 
 U8 *@getenv(U8 *str) {
-  if (!StrCmp(str, "HOME"))
+  if (!StrCompare(str, "HOME"))
     return "B:";
   return NULL;
 }
@@ -192,15 +192,15 @@ U0 fclose() {
 FILE *@fopen(U8 *filename, U8 *mode) {
   U64 file_data;
   FILE *f;
-  if (!StrCmp(mode, "r") || !StrCmp(mode, "r+") || !StrCmp(mode, "rb")) {
+  if (!StrCompare(mode, "r") || !StrCompare(mode, "r+") || !StrCompare(mode, "rb")) {
     if (!FileFind(filename))
       return NULL;
     f = MAlloc(sizeof(FILE), Fs->code_heap);
     f->filename = StrNew(filename);
     file_data = FileRead(filename, &f->size);
     f->data = CAlloc(f->size, Fs->code_heap);
-    // MemCpy(f->data, file_data, f->size);
-    MemCpy(f->data, file_data, f->size);
+    // MemCopy(f->data, file_data, f->size);
+    MemCopy(f->data, file_data, f->size);
     f->descriptor = new_fd++;
     f->mode = StrNew(mode);
     debug_print("fopen: got file descriptor %d\n", f->descriptor);
@@ -217,7 +217,7 @@ U0 fopen() {
 }
 
 I64 @fread(U8 *ptr, I64 size, I64 nmemb, FILE *f) {
-  MemCpy(ptr, f->data + f->pos, (size * nmemb));
+  MemCopy(ptr, f->data + f->pos, (size * nmemb));
 
   //"fread @ pos, size: %d, %d\n", f->pos, (size * nmemb);
   // D(ptr, Min(256, size * nmemb));
@@ -284,9 +284,9 @@ U0 ftell() {
 
 I64 @fwrite(U8 *ptr, I64 size, I64 nmemb, FILE *f) {
   return (size * nmemb);
-  MemCpy(f->data + f->pos, ptr, (size * nmemb));
-  if (debug.enabled)
-    D(f->data + f->pos, Min(256, size * nmemb));
+  MemCopy(f->data + f->pos, ptr, (size * nmemb));
+//  if (debug.enabled)
+//    D(f->data + f->pos, Min(256, size * nmemb));
   f->pos += (size * nmemb);
   debug_print("fwrite: pos: %d\n", f->pos);
   return (size * nmemb);
@@ -339,7 +339,7 @@ U0 memcpy() {
   PUSH_SYSV_REGS
   GET_SYSV_ARGS
   debug_print("called: memcpy(0x%08x, 0x%08x, %d)\n", p0, p1, p2);
-  MemCpy(p0, p1, p2);
+  MemCopy(p0, p1, p2);
   POP_SYSV_REGS
 }
 
@@ -347,7 +347,7 @@ U0 memcmp() {
   PUSH_SYSV_REGS
   GET_SYSV_ARGS
   debug_print("called: memcmp(0x%08x, 0x%08x, %d)\n", p0, p1, p2);
-  MemCmp(p0, p1, p2);
+  MemCompare(p0, p1, p2);
   POP_SYSV_REGS
 }
 
@@ -368,7 +368,7 @@ I64 @mkdir(U8 *path) {
   CDoc *olddoc = Fs->put_doc;
   CDoc *tmpdoc = DocNew;
   Fs->put_doc = tmpdoc;
-  DirMk(path);
+  DirMake(path);
   Fs->put_doc = olddoc;
   DocDel(tmpdoc);
   return 0;
@@ -458,7 +458,7 @@ U8 *@realloc(U8 *ptr, I64 size) {
     new = MAlloc(size, Fs->code_heap);
   } else {
     new = MAlloc(size, Fs->code_heap);
-    MemCpy(new, ptr, size);
+    MemCopy(new, ptr, size);
     Free(ptr);
   }
   return new;
@@ -476,7 +476,7 @@ U0 strcasecmp() {
   PUSH_SYSV_REGS
   GET_SYSV_ARGS
   debug_print("called: strcasecmp(\"%s\",\"%s\")\n", p0, p1);
-  StrICmp(p0, p1);
+  StrICompare(p0, p1);
   POP_SYSV_REGS
 }
 
@@ -484,7 +484,7 @@ U0 strcmp() {
   PUSH_SYSV_REGS
   GET_SYSV_ARGS
   debug_print("called: strcmp(\"%s\",\"%s\")\n", p0, p1);
-  StrCmp(p0, p1);
+  StrCompare(p0, p1);
   POP_SYSV_REGS
 }
 
