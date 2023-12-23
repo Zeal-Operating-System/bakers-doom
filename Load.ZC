@@ -1,12 +1,29 @@
-#define include_noreindex #include
 
-AutoComplete(OFF);
+#include "::/3rdParty/Lib/AlecDebug";
+#include "::/3rdParty/Lib/TOSGame";
+#include "::/3rdParty/Lib/PatchRel";
+#include "::/3rdParty/Lib/LibC";
+#include "::/3rdParty/Lib/SDL2";
+#include "::/3rdParty/Lib/ELF64";
 
-include_noreindex "::/3rdParty/Lib/AlecDebug";
-include_noreindex "::/3rdParty/Lib/TOSGame";
-include_noreindex "::/3rdParty/Lib/PatchRel";
-include_noreindex "::/3rdParty/Lib/LibC";
-include_noreindex "::/3rdParty/Lib/SDL2";
-include_noreindex "::/3rdParty/Lib/ELF64";
+U0 LoadGame()
+{
+	AutoComplete(OFF);
+	DocMax;
+	WinMax;
+	//SingleUser(TRUE);
+	try
+	{
+		load_elf("chocolate-doom", "-mmap", "-nomouse", "-nosound",
+		"-nogui", "-iwad", "doom1.wad");
+	}
+	catch
+	{
+		Fs->catch_except=TRUE;
+		SysLog(" LoadGame error\n");
+	}
+	SingleUser(FALSE);
+	LFBFlush;
+}
 
-#include "Load2";;
+LoadGame;

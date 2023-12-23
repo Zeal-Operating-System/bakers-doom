@@ -1,7 +1,8 @@
 Cd(__DIR__);
+
 In("Mount;\nB\n2*24*1024\n\n\n");
 
 if (!FileFind("::/3rdParty/Lib"))
 	In("#include \"Install\";;\n");
 
-In("#include \"Go\";;\n");
+XTalkWait(Fs, "#include \"Load\";\n");
