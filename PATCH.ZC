@@ -1,0 +1,32 @@
+//MemSet(&R_RenderPlayerView+0x13, 0x90, 5);
+//U8 opcode_jmp_rsortvisspr[3] = {0xEB, 0x78, 0x90};
+U8 opcode_xor_rax[3] = {0x48, 0x31, 0xC0};;
+U8 opcode_mov_eax[2] = {0x89, 0xC0};
+U8 opcode_eax_ebp_0x10[4] = {0x67, 0x8B, 0x45, 0xF0};
+U8 opcode_eax_eax_0x08[4] = {0x67, 0x8B, 0x40, 0x08};
+U8 opcode_edx_edx_mem[3] = {0x67, 0x8B, 0x12};
+U8 opcode_eax_edx_mem[3] = {0x67, 0x89, 0x10};
+U8 opcode_0x08_eax_edx[4] = { 0x67, 0x89, 0x50, 0x08 };
+//MemCopy(&R_SortVisSprites+0xF5, opcode_jmp_rsortvisspr, 3);
+//MemSet(&T_Glow+0x08, 0x90, 17);
+MemSet(&R_SortVisSprites+0x123, 0x90, 2);
+//MemSet(&P_BlockThingsIterator+0x74,0x90,2);
+MemSet(&T_Glow+0x96, 0x90, 0xDF-0x96);
+MemCopy(&R_SortVisSprites+0xF1, opcode_eax_ebp_0x10, 4);
+MemCopy(&R_SortVisSprites+0xFD, opcode_eax_ebp_0x10, 4);
+//MemSet(&R_SortVisSprites+0x134, 0x90, 0x190-0x134);
+//MemSet(&R_SortVisSprites+0x131, 0x90, 1);
+//MemSet(&R_SortVisSprites+0x133, 0x02, 1);
+MemCopy(&R_SortVisSprites+0x113, opcode_eax_eax_0x08, 4);
+MemCopy(&R_SortVisSprites+0x131, opcode_edx_edx_mem, 3);
+MemCopy(&R_SortVisSprites+0x134, opcode_eax_edx_mem, 3);
+MemCopy(&R_SortVisSprites+0x146, opcode_0x08_eax_edx, 4);
+
+if (_RIP >= &R_SortVisSprites && _RIP < &R_SortVisSprites+0x190)
+{
+	_RIP = _RIP + 0x190 - (_RIP - &R_SortVisSprites);
+	_RAX&=U32_MAX;
+	_RDX&=U32_MAX;
+}
+
+
