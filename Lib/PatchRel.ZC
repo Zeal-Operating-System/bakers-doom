@@ -8,6 +8,7 @@ U0 PatchJmpRel32(U32 from, U32 to) {
   *((from + 1)(I32 *)) = to - from - 5;
 }
 
+/*
 U0 EnableSSE() {
   asm
   {
@@ -22,3 +23,5 @@ U0 EnableSSE() {
 }
 
 EnableSSE;
+
+*/

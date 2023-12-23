@@ -11,7 +11,7 @@ Debug debug;
 debug.bookmark = -1;
 debug.counter = 0;
 //debug.enabled = FALSE;
-debug.enabled = FALSE;
+debug.enabled = FALSE;
 
 U0 debug_print(U8 *fmt, ...) {
 

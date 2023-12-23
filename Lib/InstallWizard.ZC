@@ -1,0 +1,23 @@
+if (!IsDir("::/3rdParty"))
+	DirMake("::/3rdParty");
+if (!IsDir("::/3rdParty/Lib"))
+	DirMake("::/3rdParty/Lib");
+
+U0 LibraryInstall(U8 *s)
+{
+	U8 *s_install = MStrPrint("::/3rdParty/Lib/%s", s);
+	U8 *s_lib = MStrPrint("./Lib/%s", s);
+	if (!FileFind(s_install))
+	{
+		Copy(s_lib, s_install);
+	}
+	else
+	{
+		"\nMerging %s %s\n", s_install, s_lib;
+		Merge(s_install, s_lib, "+r+d");
+		 
+	}
+	FreeAll(s_install, s_lib);
+	"\n";
+}
+

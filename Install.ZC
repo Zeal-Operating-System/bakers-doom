@@ -1,0 +1,16 @@
+Cd(__DIR__);
+
+#if (!FileFind("::/3rdParty/Lib/InstallWizard.ZC"))
+#include "Lib/InstallWizard"
+#else
+#include "::/3rdParty/Lib/InstallWizard"
+#endif;;
+
+LibraryInstall("InstallWizard.ZC");
+LibraryInstall("AlecDebug.ZC");
+LibraryInstall("TOSGame.ZC");
+LibraryInstall("PatchRel.ZC");
+LibraryInstall("LibC.ZC");
+LibraryInstall("SDL2.ZC");
+LibraryInstall("ELF64.ZC");
+
