@@ -2,22 +2,11 @@
 
 AutoComplete(OFF);
 
-include_noreindex "Lib/Debug";
-include_noreindex "Lib/TOSGame";
-include_noreindex "Lib/Misc";
-include_noreindex "Lib/LibC";
-include_noreindex "Lib/SDL2";
-include_noreindex "Lib/SDL2_net";
-include_noreindex "Lib/ELF64";
+include_noreindex "::/3rdParty/Lib/AlecDebug";
+include_noreindex "::/3rdParty/Lib/TOSGame";
+include_noreindex "::/3rdParty/Lib/PatchRel";
+include_noreindex "::/3rdParty/Lib/LibC";
+include_noreindex "::/3rdParty/Lib/SDL2";
+include_noreindex "::/3rdParty/Lib/ELF64";
 
-DocMax;
-WinMax;
-
-
-SingleUser(TRUE);
-load_elf("chocolate-doom", "-mmap", "-nomouse", "-nosound",
-"-iwad", "doom1.wad");
-
-SingleUser(FALSE);
-LFBFlush;
-BootRAM;
+#include "Load2";;

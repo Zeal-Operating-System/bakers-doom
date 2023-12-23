@@ -145,7 +145,7 @@ U0 TG_Exit() {
   }
   LBtc(&sys_winmgr_task->task_flags, TASKf_SUSPENDED);
 }
-/*
+/*
 U0 TG_Resume() {
   // Resume from debugger.
 

@@ -286,7 +286,7 @@ I64 @fwrite(U8 *ptr, I64 size, I64 nmemb, FILE *f) {
   return (size * nmemb);
   MemCopy(f->data + f->pos, ptr, (size * nmemb));
 //  if (debug.enabled)
-//    D(f->data + f->pos, Min(256, size * nmemb));
+//    D(f->data + f->pos, Min(256, size * nmemb));
   f->pos += (size * nmemb);
   debug_print("fwrite: pos: %d\n", f->pos);
   return (size * nmemb);
@@ -739,3 +739,12 @@ U0 vsnprintf() {
   StrPrint(p0, p2, *va_ptr(U64 *), *va_ptr2(U64 *), *va_ptr3(U64 *));
   POP_SYSV_REGS
 }
+
+U0 fprintf()
+{ //stub
+  PUSH_SYSV_REGS
+  GET_SYSV_ARGS
+  POP_SYSV_REGS
+}
+
+//

@@ -76,6 +76,7 @@ class Elf {
 U0 (*_start)();
 
 U0 unimplemented_symbol() {
+	Panic(" unimplemented ");
   I32 s = 0xDEADF00D;
   "Unimplemented symbol: %s\n", s;
   while (1)
@@ -242,14 +243,14 @@ U0 process_elf_debug_symbols(Elf *elf) {
           entry_name, symtab->st_value, symtab->st_size);
       break;
     case STT_FUNC:
-      hf = SysCAlloc(sizeof(CHashFun));
+      hf = CAlloc(sizeof(CHashFun));
       hf->str = entry_name;
       hf->type = HTT_FUN;
       hf->exe_addr = symtab->st_value;
       hf->size = symtab->st_size;
-//      HashAdd(hf, Fs->hash_table);
-//      debug_print("HASH ADD!!!!!!!!!! Add function '%s' to hash table, addr = 0x%08x, size = %d\n",
-//                  entry_name, symtab->st_value, symtab->st_size);
+      HashAdd(hf, Fs->hash_table);
+      debug_print("Add function '%s' to hash table, addr = 0x%08x, size = %d\n",
+                  entry_name, symtab->st_value, symtab->st_size);
       break;
     }
     symtab++;
@@ -365,5 +366,13 @@ U0 load_elf(...) {
 
   // B(0x449340);
 
-  _start();
+	try
+	{
+	  _start();
+	}
+	catch
+	{
+		Fs->catch_except=TRUE;
+		SysLog(" ??? ??");
+	}
 }

@@ -16,8 +16,8 @@ U32 sdl_game_colors[256];
 
 CFifoI64 *sdl_event_fifo = FifoI64New(1024);
 
-#define SDL_DC_WIDTH	1024
-#define SDL_DC_HEIGHT	768
+#define SDL_DC_WIDTH	640
+#define SDL_DC_HEIGHT	480
 //CDC *dc_gamescreen = DCNew(320, 200);
 //CDC *dc_gamescreen = DCNew(640, 480);
 CDC *dc_gamescreen = DCNew(SDL_DC_WIDTH, SDL_DC_HEIGHT);
@@ -203,7 +203,7 @@ I64 @SDL_Flip(SDL_Surface *surface) {
 			out_px.r = in_px.r ;
 			out_px.g = in_px.g ;
 			out_px.b = in_px.b ;
-			DrawScreenPixel(ix, iy, out_px);
+			DrawScreenPixel(ix+Fs->pix_left, iy+Fs->pix_top, out_px);
 
 
 		}
@@ -540,5 +540,5 @@ U0 SDL_WM_SetCaption() {
 U0 SDL_QuitSubSystem() {
   TG_Exit;
 //  PaletteSetStd;
-  _exit();
+  _exit();
 }

@@ -1,0 +1,21 @@
+
+U0 LoadGame()
+{
+	DocMax;
+	WinMax;
+	//SingleUser(TRUE);
+	try
+	{
+		load_elf("chocolate-doom", "-mmap", "-nomouse", "-nosound",
+		"-nogui", "-iwad", "DOOM2.WAD");
+	}
+	catch
+	{
+		Fs->catch_except=TRUE;
+		SysLog(" Unexpected error ?\n");
+	}
+	SingleUser(FALSE);
+	LFBFlush;
+}
+
+LoadGame;
